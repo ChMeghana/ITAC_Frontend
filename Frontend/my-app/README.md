@@ -71,3 +71,5 @@ export default defineConfig([
   },
 ])
 ```
+
+https://www.figma.com/design/iR3tcD3R0jVLUccIlc6FLN/OSU?node-id=225-5&t=QCoXC8p7979BpC0r-1

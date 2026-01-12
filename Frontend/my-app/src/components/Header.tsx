@@ -42,6 +42,7 @@ const Header = () => {
 
       {/* ORANGE DIVIDER */}
       <div className="h-[0.65vh] bg-[#FE5C00] w-full" />
+      <hr className="border-t-30 border-black-300 w-full" />
     </header>
   );
 };
