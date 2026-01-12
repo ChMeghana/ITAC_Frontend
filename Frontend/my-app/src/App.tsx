@@ -43,7 +43,8 @@ import Header from './components/Header'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-import UpdateDetails from './pages/UpdateDetails'
+import UpdateDetails from './pages/ClientUpdateDetails'
+import UploadDocuments from './pages/UploadDocuments'
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/update-details" element={<UpdateDetails />} />
+        <Route path="/upload-documents" element={<UploadDocuments />} />
       </Routes>
     </>
   )

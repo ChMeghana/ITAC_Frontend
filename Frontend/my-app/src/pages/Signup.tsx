@@ -13,7 +13,7 @@ const Signup = () => {
         </label>
         <input
           type="email"
-          className="w-full h-12 rounded-xl px-4 mb-5 outline-none"
+          className="bg-white w-full h-12 rounded-xl px-4 mb-6 outline-none"
         />
 
         {/* PASSWORD */}
@@ -22,16 +22,16 @@ const Signup = () => {
         </label>
         <input
           type="password"
-          className="w-full h-12 rounded-xl px-4 mb-5 outline-none"
+          className="bg-white w-full h-12 rounded-xl px-4 mb-6 outline-none"
         />
 
         {/* RE-PASSWORD */}
         <label className="block text-black font-semibold mb-2">
-          Re-Password:
+          Re-Enter Password:
         </label>
         <input
           type="password"
-          className="w-full h-12 rounded-xl px-4 mb-4 outline-none"
+          className="bg-white w-full h-12 rounded-xl px-4 mb-6 outline-none"
         />
 
         {/* LOGIN LINK */}
