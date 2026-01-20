@@ -1,64 +1,35 @@
-
-// import Header from '../src/components/Header';
-
-// function App() {
-  
-//   return (
-//     <>
-//       <div>
-//         <Header/>
-//       </div>
-//     </>
-//   )
-// }
-
-// export default App;
-
-
-// import { Routes, Route } from 'react-router-dom'
-// import Header from './components/Header'
-// import Home from './pages/Home'
-// import Login from './pages/Login'
-
-// function App() {
-//   return (
-//     <>
-//       {/* Always visible */}
-//       <Header />
-
-//       {/* Page content changes here */}
-//       <Routes>
-//         <Route path="/" element={<Home />} />
-//         <Route path="/login" element={<Login />} />
-//       </Routes>
-//     </>
-//   )
-// }
-
-// export default App
-
-
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Dashboard from './pages/Dashboard'
+import Inbox from './pages/Inbox'
 import UpdateDetails from './pages/ClientUpdateDetails'
 import UploadDocuments from './pages/UploadDocuments'
+import DashboardLayout from './layouts/DashboardLayout' // Import the new layout
 
 function App() {
   return (
     <>
-      {/* Always visible */}
+      {/* Header is always visible at the top */}
       <Header />
 
-      {/* Routes */}
       <Routes>
+        {/* PUBLIC ROUTES (Full Width) */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/update-details" element={<UpdateDetails />} />
-        <Route path="/upload-documents" element={<UploadDocuments />} />
+
+        {/* DASHBOARD ROUTES (With Sidebar) */}
+        {/* We wrap these inside the Layout route */}
+        <Route element={<DashboardLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/inbox" element={<Inbox />} />
+          <Route path="/update-details" element={<UpdateDetails />} />
+          <Route path="/upload-documents" element={<UploadDocuments />} />
+          {/* You can add more sidebar pages here later */}
+        </Route>
       </Routes>
     </>
   )
