@@ -36,11 +36,17 @@ const Dashboard = () => {
                 </a>
               </p>
               <p><span className="font-bold text-black">Phone:</span> +1 224-532-8454</p>
-              <p>
-                <span className="font-bold text-black">Address:</span> 1600 Patrick Dr, Pocahontas,
-              </p>
-              <p>AR, 72455.</p>
               
+              {/* --- UPDATED ADDRESS SECTION --- */}
+              <p><span className="font-bold text-black">Street Address:</span> 1600 Patrick Dr</p>
+              <p><span className="font-bold text-black">City:</span> Pocahontas</p>
+              <p>
+                <span className="font-bold text-black">State:</span> AR
+                <span className="mx-3 text-gray-400">|</span> 
+                <span className="font-bold text-black">Zip Code:</span> 72455
+              </p>
+              {/* ------------------------------- */}
+
               <div className="pt-6 flex justify-center">
                 <Link to="/update-details">
                     <button className="bg-[#FE5C00] text-white px-10 py-3 rounded shadow hover:bg-orange-700 transition font-bold uppercase text-base tracking-wider">
@@ -59,7 +65,7 @@ const Dashboard = () => {
             <div className="h-1.5 bg-[#FE5C00] w-full mt-4" />
           </div>
 
-          {/* Main Text Area - Centered and Filling Space */}
+          {/* Main Text Area */}
           <div className="flex-grow flex items-center justify-center px-6">
             <div className="text-gray-800 text-2xl leading-9 text-center font-medium">
               You have been selected for ITAC services.

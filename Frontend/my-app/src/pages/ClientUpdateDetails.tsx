@@ -20,7 +20,6 @@ const FormRow = ({ label, wide }: FormRowProps) => {
 // 3️⃣ Main page component
 const UpdateDetails = () => {
   return (
-    // CHANGE: w-full and removed max-w restriction
     <div className="w-full h-full">
 
       {/* PAGE CARD */}
@@ -32,7 +31,7 @@ const UpdateDetails = () => {
         </h2>
         <div className="h-1.5 bg-[#FE5C00] w-full mt-4 mb-10" />
 
-        {/* PROFILE SECTION - LARGER */}
+        {/* PROFILE SECTION */}
         <div className="flex flex-col items-center mb-12">
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
             <img
@@ -44,7 +43,7 @@ const UpdateDetails = () => {
           <button className="text-lg text-blue-600 mt-3 font-medium hover:underline">Edit</button>
         </div>
 
-        {/* FORM GRID - INCREASED GAP AND TEXT */}
+        {/* FORM GRID */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-16 gap-y-8">
 
           {/* LEFT COLUMN */}
@@ -54,11 +53,21 @@ const UpdateDetails = () => {
             <FormRow label="Contact Email" />
             <FormRow label="Contact Phone" />
 
-            <FormRow label="Address" />
+            {/* --- UPDATED ADDRESS SECTION --- */}
+            
+            {/* 1. Street Address */}
+            <FormRow label="Street Address" />
+
+            {/* 2. City */}
+            <FormRow label="City" />
+
+            {/* 3. State & Zip Code (Split Row) */}
             <div className="flex gap-6">
-              <FormRow label="City/State" />
+              <FormRow label="State" />
               <FormRow label="Zip code" />
             </div>
+
+            {/* ------------------------------- */}
 
             <FormRow label="SIC Code" />
             <FormRow label="NAICS" />
@@ -83,7 +92,7 @@ const UpdateDetails = () => {
 
         </div>
 
-        {/* SAVE BUTTON - LARGER */}
+        {/* SAVE BUTTON */}
         <div className="flex justify-end mt-16">
           <button className="bg-[#FE5C00] text-white px-12 py-3 rounded shadow hover:bg-orange-700 transition font-bold text-xl">
             Save

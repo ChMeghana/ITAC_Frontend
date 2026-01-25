@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
+import TemporaryDashboard from './pages/TemporaryDashboard'
 import Inbox from './pages/Inbox'
 import UpdateDetails from './pages/ClientUpdateDetails'
 import UploadDocuments from './pages/UploadDocuments'
@@ -20,11 +21,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/TemporaryDashboard" element={<TemporaryDashboard />} />
         {/* DASHBOARD ROUTES (With Sidebar) */}
         {/* We wrap these inside the Layout route */}
         <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        
+
         <Route path="/inbox" element={<Inbox />} />
           <Route path="/update-details" element={<UpdateDetails />} />
           <Route path="/upload-documents" element={<UploadDocuments />} />
