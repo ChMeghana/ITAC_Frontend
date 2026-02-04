@@ -1,116 +1,134 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// --- MAP IMPORTS ---
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css"; 
+import L from "leaflet";
+
+// --- LEAFLET ICON FIX ---
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
+
 const StaffDashboard = () => {
   const navigate = useNavigate();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  // Toggle the action menu for a specific row
   const toggleMenu = (id: string) => {
     if (activeMenuId === id) setActiveMenuId(null);
     else setActiveMenuId(id);
   };
 
-  // Mock Data for the Table
-  const [clients] = useState([
-    {
-      id: "OK1165",
-      companyName: "ITW Paslode Power Nailing",
-      contactName: "Steven Simpson",
-      contactNumber: "224-532-8454",
-      visitDate: "Feb 23, 2025",
-      status: "New Inquiry",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    },
-    {
-      id: "OK1166",
-      companyName: "Kingspan Roofing",
-      contactName: "Antonio Lucena",
-      contactNumber: "501-475-8533",
-      visitDate: "Feb 18, 2025",
-      status: "Audit Scheduled",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    },
-    {
-      id: "OK1167",
-      companyName: "LOG10, LLC",
-      contactName: "Krystal Dill",
-      contactNumber: "580-304-7953",
-      visitDate: "Dec 25, 2024",
-      status: "Report writing",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    },
-    {
-      id: "OK1168",
-      companyName: "Checotah Casino",
-      contactName: "Karl Hildreth",
-      contactNumber: "918-397-7449",
-      visitDate: "Jan 10, 2025",
-      status: "Awaiting documents",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    },
-    {
-      id: "OK1169",
-      companyName: "Crusoe Tulsa 1",
-      contactName: "Dave Guard",
-      contactNumber: "405-745-6858",
-      visitDate: "Mar 30, 2025",
-      status: "Audit Scheduled",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    },
-  ]);
+  // --- HELPER: GENERATE REFERENCE ID ---
+  // Format: MMDDYYYY + Unique Suffix (e.g., 02032026101)
+  const generateRefId = (dateString: string, index: number) => {
+    const date = new Date(dateString);
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    // Use index to create a unique suffix (101, 102, etc.) to handle same-day logins
+    const uniqueSuffix = 100 + index; 
+    return `${mm}${dd}${yyyy}${uniqueSuffix}`;
+  };
+
+  // Mock Data (Using login/visit date to generate IDs)
+  const [clients] = useState(() => {
+    const rawData = [
+        {
+          companyName: "ITW Paslode Power Nailing",
+          contactName: "Steven Simpson",
+          contactNumber: "224-532-8454",
+          visitDate: "Feb 23, 2025",
+          status: "New Inquiry",
+          image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+          location: { lat: 36.1156, lng: -97.0584 },
+        },
+        {
+          companyName: "Kingspan Roofing",
+          contactName: "Antonio Lucena",
+          contactNumber: "501-475-8533",
+          visitDate: "Feb 18, 2025",
+          status: "Audit Scheduled",
+          image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+          location: { lat: 35.4676, lng: -97.5164 },
+        },
+        {
+          companyName: "LOG10, LLC",
+          contactName: "Krystal Dill",
+          contactNumber: "580-304-7953",
+          visitDate: "Dec 25, 2024",
+          status: "Report writing",
+          image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+          location: { lat: 36.1540, lng: -95.9928 },
+        },
+        {
+          companyName: "Checotah Casino",
+          contactName: "Karl Hildreth",
+          contactNumber: "918-397-7449",
+          visitDate: "Jan 10, 2025",
+          status: "Awaiting documents",
+          image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+          location: { lat: 35.7054, lng: -95.3588 },
+        },
+    ];
+
+    // Generate IDs dynamically based on date
+    return rawData.map((client, index) => ({
+        ...client,
+        id: generateRefId(client.visitDate, index)
+    }));
+  });
 
   return (
     <div className="w-full space-y-8" onClick={() => setActiveMenuId(null)}> 
-      {/* Note: onClick on wrapper helps close menus when clicking outside, though simple implementation */}
       
-      {/* TOP SECTION: GRID OF 2 CARDS */}
+      {/* TOP SECTION: MAP & ACTION CENTER */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         
-        {/* LEFT CARD: My Information */}
-        <div className="bg-gray-200 rounded-lg overflow-hidden shadow-sm flex flex-col h-full min-h-[380px]">
-          {/* Header */}
-          <div className="bg-gray-600 text-white text-center py-3 font-bold text-2xl tracking-wide">
-            My Information
-          </div>
-          
-          {/* Content */}
-          <div className="p-8 flex flex-col sm:flex-row items-center justify-center gap-8 flex-grow">
-            {/* Profile Image */}
-            <div className="flex-shrink-0">
-               <img
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
-                alt="Profile" 
-                className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md"
-              />
-            </div>
+        {/* LEFT CARD: MAP */}
+        <div className="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col h-full min-h-[380px] border border-gray-200 relative z-0">
+           <MapContainer 
+                center={[35.8, -96.5]} 
+                zoom={7} 
+                scrollWheelZoom={false}
+                className="w-full h-full min-h-[380px]"
+           >
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {clients.map((client) => (
+                    <Marker key={client.id} position={[client.location.lat, client.location.lng]}>
+                        <Popup>
+                            <div className="text-center">
+                                <strong className="block text-sm">{client.companyName}</strong>
+                                <span className="text-xs text-gray-500">Ref: {client.id}</span>
+                                <Link to={`/staff-inbox/${client.id}`} className="text-[#FE5C00] text-xs underline mt-1 block">
+                                    Message
+                                </Link>
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))}
+           </MapContainer>
 
-            {/* Details */}
-            <div className="text-center sm:text-left space-y-2 text-lg text-gray-800 font-medium">
-              <p className="text-2xl font-bold mb-1">Name: Dr. Hitesh D. Vora</p>
-              <p>Position: Director</p>
-              <p>
-                Email:{" "}
-                <a href="mailto:hitesh.vora@okstate.edu" className="underline hover:text-[#FE5C00]">
-                  hitesh.vora@okstate.edu
-                </a>
-              </p>
-              <p>Phone: +1 4057448710</p>
-              <p>LinkedIn:</p>
-              <p>Facebook:</p>
-              
-              <div className="pt-4 text-center sm:text-left">
-                <Link to="/staff-info">
-                    <button className="bg-[#FE5C00] text-white px-10 py-2 rounded shadow hover:bg-orange-700 transition font-bold uppercase text-lg tracking-wider">
-                    UPDATE
-                    </button>
-                </Link>
-              </div>
-            </div>
-          </div>
+           <div className="absolute top-4 left-4 z-[400]">
+              <button className="bg-white text-gray-700 px-3 py-1 rounded shadow text-xs font-bold uppercase border border-gray-200 hover:bg-gray-50">
+                  Reset View
+              </button>
+           </div>
         </div>
 
-        {/* RIGHT CARD: Action Center */}
+        {/* RIGHT CARD: ACTION CENTER */}
         <div className="bg-white p-2 h-full min-h-[380px] flex flex-col">
            <div className="mb-6">
             <h2 className="text-3xl font-bold text-center text-black">Action Center</h2>
@@ -118,7 +136,6 @@ const StaffDashboard = () => {
           </div>
 
           <div className="flex-grow flex items-center justify-center">
-            {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-6 w-full px-4">
                 <StatBox label="New Inquiries" count={7} color="bg-blue-100" />
                 <StatBox label="Awaiting documents" count={5} color="bg-red-100" />
@@ -126,7 +143,6 @@ const StaffDashboard = () => {
                 <StatBox label="Reports nearing deadline" count={2} color="bg-green-100" />
             </div>
 
-            {/* Buttons Column */}
             <div className="flex flex-col gap-6 ml-6 justify-center">
                  <Link to="/staff-kanban">
                     <button className="w-48 bg-[#FE5C00] text-white px-6 py-4 rounded shadow hover:bg-orange-700 transition font-bold text-lg text-center leading-tight">
@@ -145,9 +161,8 @@ const StaffDashboard = () => {
 
       {/* BOTTOM SECTION: DASHBOARD TABLE */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[500px]">
-        {/* Table Header Title */}
-         <div className="bg-white p-6 border-b border-gray-200">
-            <h2 className="text-3xl font-bold text-center text-black uppercase tracking-wider">Dashboard</h2>
+        <div className="bg-white p-6 text-center border-b border-gray-200">
+            <h2 className="text-3xl font-bold text-black uppercase tracking-wider">Dashboard</h2>
         </div>
 
         {/* Filter Bar */}
@@ -160,7 +175,7 @@ const StaffDashboard = () => {
             <div className="flex-1 max-w-xl relative">
                  <input 
                     type="text" 
-                    placeholder="Search Company name or Id" 
+                    placeholder="Search by Reference No. or Company" 
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md outline-none focus:border-[#FE5C00]"
                 />
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -168,11 +183,9 @@ const StaffDashboard = () => {
 
             <div className="flex gap-3">
                 <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                     Filter
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>
                     Sort
                 </button>
             </div>
@@ -183,8 +196,10 @@ const StaffDashboard = () => {
             <table className="w-full text-left border-collapse">
                 <thead>
                     <tr className="bg-gray-50 text-gray-600 border-b border-gray-200 text-sm uppercase">
+                        {/* 1. NEW POSITION: REFERENCE ID FIRST */}
+                        <th className="px-6 py-4 font-bold">Reference No.</th>
+                        
                         <th className="px-6 py-4 font-bold">Company Name</th>
-                        <th className="px-6 py-4 font-bold">ID</th>
                         <th className="px-6 py-4 font-bold">Contact Number</th>
                         <th className="px-6 py-4 font-bold">Contact Name</th>
                         <th className="px-6 py-4 font-bold">Visit Date</th>
@@ -195,16 +210,26 @@ const StaffDashboard = () => {
                 <tbody className="divide-y divide-gray-100">
                     {clients.map((client) => (
                         <tr key={client.id} className="hover:bg-gray-50 transition relative">
+                            
+                            {/* 1. REFERENCE ID COLUMN (MOVED TO START) */}
+                            <td className="px-6 py-4">
+                                <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                                    {client.id}
+                                </span>
+                            </td>
+
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
                                     <img src={client.image} alt="" className="w-10 h-10 rounded-full object-cover" />
-                                    <div>
-                                        <div className="font-bold text-gray-900">{client.companyName}</div>
-                                        <div className="text-sm text-gray-500">{client.companyName.split(' ')[0]}...</div>
-                                    </div>
+                                <div>
+                                 <Link to={`/staff-client-details/${client.id}`} className="font-bold text-gray-900 hover:text-[#FE5C00] transition">
+                                     {client.companyName}
+                                </Link>
+                                <div className="text-xs text-gray-400">OK-{client.id.slice(-4)}</div> 
                                 </div>
+                                 </div>
                             </td>
-                            <td className="px-6 py-4 font-medium text-gray-900">{client.id}</td>
+
                             <td className="px-6 py-4">
                                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                                     <span className="w-2 h-2 rounded-full bg-[#FE5C00]"></span>
@@ -220,11 +245,11 @@ const StaffDashboard = () => {
                                 <StatusBadge status={client.status} />
                             </td>
                             
-                            {/* ACTION COLUMN WITH DROPDOWN */}
+                            {/* ACTION COLUMN */}
                             <td className="px-6 py-4 text-center relative">
                                 <button 
                                     onClick={(e) => {
-                                        e.stopPropagation(); // Prevent row click
+                                        e.stopPropagation(); 
                                         toggleMenu(client.id);
                                     }}
                                     className="text-gray-400 hover:text-[#FE5C00] p-2 rounded-full hover:bg-orange-50 transition outline-none"
@@ -263,7 +288,6 @@ const StaffDashboard = () => {
 };
 
 /* --- SUB-COMPONENTS --- */
-
 const StatBox = ({ label, count, color }: { label: string; count: number; color: string }) => (
     <div className={`${color} rounded-lg p-4 flex flex-col items-center justify-center text-center shadow-sm h-32`}>
         <span className="text-gray-700 font-bold text-sm mb-2">{label}</span>

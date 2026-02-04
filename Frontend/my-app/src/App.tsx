@@ -17,6 +17,7 @@ import StaffAddClient from './pages/StaffAddClient';
 import StaffClientReview from './pages/StaffClientReview';
 import StaffDocumentReview from './pages/StaffDocumentReview';
 import StaffInbox from './pages/StaffInbox';
+import StaffClientDetails from './pages/StaffClientDetails'
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/staff-client-review/:clientId" element={<StaffClientReview />} />
           <Route path="/staff-document-review/:clientId" element={<StaffDocumentReview />} />
           <Route path="/staff-inbox/:clientId?" element={<StaffInbox />} />
+          <Route path="/staff-client-details/:clientId" element={<StaffClientDetails />} />
           {/* Add other staff pages here later, e.g.:
           <Route path="/staff-kanban" element={<KanbanBoard />} /> 
           */}
